@@ -1,0 +1,43 @@
+Reading text format
+length:  128
+min:  2
+max:  98
+range:  96
+max_height:  32
+units_per_height:  3.00
+     +----+----+----+----+----+----+----+----+----+----
+ 96 |                                                                                       x                                        
+ 93 |                       x    x             x                                 x          x                                        
+ 90 |                       x    x            xx      x     x                    x          x         x                              
+ 87 |     x                 x    x            xx   x  x     x                  x x          x  x    x x                            x 
+ 84 |     x                 x    x           xxx   x  x    xx                  x x          x  x    x x                            x 
+ 81 |  x  x       x  x      x    x      x    xxx   x  x    xx                  x x          x  x xx x x x      x        x          x 
+ 78 |  x  x       x  x      x    x      x    xxx   x  x    xx            x     x x          x  x xx x x x      x        x          x 
+ 75 |  x  x  x    x  xx     x    x    x x    xxx   x xx    xx            x     x xx         x  x xx x x x     xx     x  x          x 
+ 72 |  x  x  x    x  xx     x    x    x x    xxx  xx xxx   xx  x        xx     x xx         xx x xx x x x x   xx     x  x          x 
+ 69 |  x  x  x x  x  xx     x    xx   x x    xxx  xxxxxx   xx  x        xx     x xx         xx x xx x x x x   xx     x  x x        x 
+ 66 |  x  x  x x  x  xx     x    xx   x x    xxx  xxxxxx   xx  x        xx     x xx         xx x xx x x x x   xx     x  x x        x 
+ 63 |  x  x  x x  x  xx     x    xx   x x    xxx  xxxxxx  xxx  x x      xx     x xx         xxxx xx x x x x   xx    xx  x x        x 
+ 60 |  x  x  x x  x  xx     x    xx   xxx    xxx  xxxxxx  xxx  x x      xx     x xx         xxxx xx x x x x   xx    xx  x x x      x 
+ 57 |  x  xxxx x  x  xx     x    xx   xxx    xxx  xxxxxx xxxx  x x      xx  x xx xx         xxxx xx x x x x   xx    xx xx x x      x 
+ 54 |  x  xxxx x  x  xx     x    xx  xxxx    xxx  xxxxxx xxxx  x x      xx  x xx xx         xxxx xx x x x x   xx    xx xx x x      x 
+ 51 |  x  xxxx x  x xxx     x    xx  xxxx    xxx xxxxxxx xxxx  x x   x  xx  x xx xx         xxxx xx x x x x   xx    xx xx x x      x 
+ 48 |  x  xxxx x  x xxx    xx    xx  xxxx    xxx xxxxxxx xxxx  x x   x  xx  x xx xx         xxxx xx x x x x   xx    xx xxxx x   x  x 
+ 45 |  x  xxxx x  x xxx    xx    xxx xxxx  x xxx xxxxxxx xxxx  x x   x  xx  xxxx xx     x  xxxxx xx x x x x   xx    xx xxxx x   x xx 
+ 42 |  x  xxxx x  x xxx    xx    xxx xxxx  x xxx xxxxxxx xxxx  x x   x  xx  xxxx xx  x  x  xxxxx xx x x x x   xx    xx xxxx xx  x xx 
+ 39 |  x xxxxx x  x xxx    xx   xxxx xxxx  x xxx xxxxxxx xxxx  x x  xx  xx  xxxx xx  x  x  xxxxx xxxx xxx x   xx    xx xxxx xx  x xx 
+ 36 |  x xxxxx xx x xxx    xx   xxxx xxxx  x xxx xxxxxxx xxxx  x x  xxx xx  xxxx xx  x  x  xxxxx xxxxxxxxxx   xx    xxxxxxx xx  x xx 
+ 33 |  x xxxxx xx x xxx x  xx   xxxx xxxx  x xxx xxxxxxxxxxxx  x x  xxx xx  xxxx xxxxx  x  xxxxx xxxxxxxxxx  xxx    xxxxxxx xx  x xx 
+ 30 |  x xxxxx xx x xxx x  xx x xxxx xxxx  x xxx xxxxxxxxxxxx  x x  xxx xx  xxxx xxxxx  x  xxxxx xxxxxxxxxx  xxx    xxxxxxxxxx  x xx 
+ 27 |  x xxxxx xx x xxx x  xx x xxxx xxxx  x xxx xxxxxxxxxxxx  xxx  xxx xx  xxxx xxxxx  x  xxxxx xxxxxxxxxx  xxx    xxxxxxxxxx  x xx 
+ 24 |  xxxxxxx xx x xxx x  xx x xxxx xxxx  x xxx xxxxxxxxxxxx  xxx  xxx xxx xxxx xxxxxx x  xxxxx xxxxxxxxxx  xxx    xxxxxxxxxx  x xx 
+ 21 |  xxxxxxx xxxx xxx x  xx x xxxx xxxxx x xxx xxxxxxxxxxxx  xxx  xxx xxx xxxxxxxxxxx x  xxxxx xxxxxxxxxx  xxx    xxxxxxxxxx  x xxx
+ 18 |  xxxxxxx xxxx xxxxx  xxxx xxxx xxxxx x xxx xxxxxxxxxxxx  xxx  xxx xxx xxxxxxxxxxx x  xxxxx xxxxxxxxxxx xxx    xxxxxxxxxx  x xxx
+ 15 |x xxxxxxxxxxxxxxxxxx  xxxx xxxx xxxxx x xxxxxxxxxxxxxxxx  xxx  xxx xxx xxxxxxxxxxx x  xxxxx xxxxxxxxxxx xxx   xxxxxxxxxxx  x xxx
+ 12 |x xxxxxxxxxxxxxxxxxxxxxxxx xxxx xxxxxxx xxxxxxxxxxxxxxxxx xxx  xxx xxxxxxxxxxxxxxx x xxxxxx xxxxxxxxxxx xxx   xxxxxxxxxxx xxxxxx
+  9 |x xxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxx xxxxxxxxxxxxxxxxx xxx  xxx xxxxxxxxxxxxxxx x xxxxxx xxxxxxxxxxxxxxxxx xxxxxxxxxxx xxxxxx
+  6 |xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxx xxx  xxx xxxxxxxxxxxxxxxxx xxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxx
+  3 |xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  0 |xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+     +----+----+----+----+----+----+----+----+----+----
+     0    5    10   15   20   25   30   35   40   45   

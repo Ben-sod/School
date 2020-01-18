@@ -1,0 +1,325 @@
+                           __________________
+
+                            LAB 13 QUESTIONS
+                           __________________
+
+
+- Name: (FILL THIS in)
+- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: Basic Library Linking
+================================
+
+(A)
+~~~
+
+  The file `do_math.c' contains some basic usage of the C library math
+  functions like `pow()'.  Compile this program using the command line
+  ,----
+  | > gcc do_math.c
+  `----
+  and show the results below which should be problematic. Describe why
+  the linker complains about functions like `cos' and `pow'..
+
+  The math library is not included in the file
+
+  *Note*: problems will arise on Linux systems with gcc: other
+  OS/compiler combinations may not cause any problems.
+
+
+(B)
+~~~
+
+  In order to fix this problem, one must link the program against the
+  math library typically called `libm'. This can be done with the option
+  `-l' for "library" and `m' for the math library as shown:
+  ,----
+  | > gcc do_math.c -lm
+  `----
+
+  Show a run of the resulting executable after a successful compile
+  below.
+
+  E is 2.718
+cos(E) is -0.912
+sin(E) is 0.411
+E^2 is 7.389
+program pid is 32513
+
+
+
+(C)
+~~~
+
+  After successfully compiling `do_math.c', use the `ldd' command to
+  examine which dynamically linked libraries it requires to
+  run. Assuming the executable is named `a.out', invoke the command like
+  this
+  ,----
+  | > ldd a.out
+  `----
+  Show the output for this command and not anything related to the math
+  library that is reported.
+
+
+  linux-vdso.so.1 (0x00007ffc9adf6000)
+  	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f0a6501f000)
+  	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0a64c2e000)
+  	/lib64/ld-linux-x86-64.so.2 (0x00007f0a655bf000)
+
+
+(D)
+~~~
+
+  Run the program which should report its Process ID (pid) before
+  pausing.  In a separate terminal, while the program is still running,
+  execute the pmap command to see the virtual address space for the
+  program (command `pmap <pid>'). Paste the results below and describe
+  any relation to the math library that is apparent.
+
+  000055641fc76000      4K r-x-- a.out
+000055641fe76000      4K r---- a.out
+000055641fe77000      4K rw--- a.out
+0000556420fdd000    132K rw---   [ anon ]
+00007f03847e5000   1948K r-x-- libc-2.27.so
+00007f03849cc000   2048K ----- libc-2.27.so
+00007f0384bcc000     16K r---- libc-2.27.so
+00007f0384bd0000      8K rw--- libc-2.27.so
+00007f0384bd2000     16K rw---   [ anon ]
+00007f0384bd6000   1652K r-x-- libm-2.27.so
+00007f0384d73000   2044K ----- libm-2.27.so
+00007f0384f72000      4K r---- libm-2.27.so
+00007f0384f73000      4K rw--- libm-2.27.so
+00007f0384f74000    156K r-x-- ld-2.27.so
+00007f0385146000     20K rw---   [ anon ]
+00007f038519b000      4K r---- ld-2.27.so
+00007f038519c000      4K rw--- ld-2.27.so
+00007f038519d000      4K rw---   [ anon ]
+00007ffcaee13000    136K rw---   [ stack ]
+00007ffcaeef8000     12K r----   [ anon ]
+00007ffcaeefb000      8K r-x--   [ anon ]
+ffffffffff600000      4K r-x--   [ anon ]
+ total             8232K
+
+
+nothing super apparent, libm may refer to the math library
+
+
+(E)
+~~~
+
+  Repeat the general steps above with the C file `do_pthreads.c' which
+  will require linking to the PThreads library with `-lpthread'.
+  - Compile to show error messages
+  - Compile successfully with proper linking and show output
+  - Call `ldd' on the executable
+  - While the program is paused, run `pmap' to see its virtual address
+    space
+
+  Show the output of these commands below.
+  main: I am the main thread
+  doit: I am thread 2
+  doit: I am thread 1
+  program pid is 32705
+
+  linux-vdso.so.1 (0x00007ffc091f6000)
+libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f4ed0bbf000)
+libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4ed07ce000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f4ed0fe0000)
+
+
+
+0000558701919000      4K r-x-- a.out
+0000558701b19000      4K r---- a.out
+0000558701b1a000      4K rw--- a.out
+00005587021b8000    132K rw---   [ anon ]
+00007f7ac3f2f000      4K -----   [ anon ]
+00007f7ac3f30000   8192K rw---   [ anon ]
+00007f7ac4730000      4K -----   [ anon ]
+00007f7ac4731000   8192K rw---   [ anon ]
+00007f7ac4f31000   1948K r-x-- libc-2.27.so
+00007f7ac5118000   2048K ----- libc-2.27.so
+00007f7ac5318000     16K r---- libc-2.27.so
+00007f7ac531c000      8K rw--- libc-2.27.so
+00007f7ac531e000     16K rw---   [ anon ]
+00007f7ac5322000    104K r-x-- libpthread-2.27.so
+00007f7ac533c000   2044K ----- libpthread-2.27.so
+00007f7ac553b000      4K r---- libpthread-2.27.so
+00007f7ac553c000      4K rw--- libpthread-2.27.so
+00007f7ac553d000     16K rw---   [ anon ]
+00007f7ac5541000    156K r-x-- ld-2.27.so
+00007f7ac5713000     20K rw---   [ anon ]
+00007f7ac5768000      4K r---- ld-2.27.so
+00007f7ac5769000      4K rw--- ld-2.27.so
+00007f7ac576a000      4K rw---   [ anon ]
+00007ffc5baa1000    136K rw---   [ stack ]
+00007ffc5bb57000     12K r----   [ anon ]
+00007ffc5bb5a000      8K r-x--   [ anon ]
+ffffffffff600000      4K r-x--   [ anon ]
+ total            23092K
+
+
+
+PROBLEM 2: Linking Static Libraries
+===================================
+
+(A)
+~~~
+
+  Libraries come in two flavors. The default type is Dynamically Linked
+  Shared Libraries that were demonstrated above.  An older but easier to
+  understand type are Statically Linked libraries.
+
+  The search functions from Assignment 4 like `binary_array_search()'
+  have been formed into a Statically Linked Library in the directory
+  `libsearch_static/'.
+
+  Change into this directory and perform a
+  ,----
+  | > make
+  `----
+  to build the library.
+
+  Describe the commands you see issued for it and what command creates
+  the final library file. Note what file extension (`lib.something') the
+  static library has in your answer.
+
+  gcc -g -Wall -c tree.c
+  gcc -g -Wall -c array.c
+  gcc -g -Wall -c list.c
+  gcc -g -Wall -c util.c
+  ar rcs libds_search.a tree.o array.o list.o util.o
+
+(B)
+~~~
+
+  Change back to the main lab directory where you will find a file
+  called `do_search.c' which uses search functions from the
+  library. Attempting to compile this program on its own leads to
+  several errors.  The first is simple:
+  ,----
+  | > gcc do_search.c
+  | do_search.c:7:10: fatal error: ds_search.h: No such file or directory
+  |  #include "ds_search.h"
+  |           ^~~~~~~~~~~~~
+  | compilation terminated.
+  `----
+  Unable to find a file to include, the compiler terminates.
+
+  Fix this by notifying the compiler where that the `ds_search.h' file
+  is in the library directory:
+  ,----
+  | > gcc do_search.c -I ds_search_static
+  | ...
+  `----
+  The `-I' option allows additional directories to be searched for
+  `#include' directive files. However, this is not the only problem.
+
+  Show the linker errors that result from the compiling this way and
+  describe why they appear.
+
+  /tmp/ccalrqUi.o: In function `main':
+  do_search.c:(.text+0x2b): undefined reference to `make_sequential_list'
+  do_search.c:(.text+0x69): undefined reference to `linkedlist_search'
+  do_search.c:(.text+0x9d): undefined reference to `linkedlist_search'
+  do_search.c:(.text+0x132): undefined reference to `list_free'
+  collect2: error: ld returned 1 exit status
+
+
+(C)
+~~~
+
+  The compiler can be notified of additional places to look for library
+  code beyond standard system locations with the `-L' option.  In this
+  case, the library `ds_search_static' contains the library. Finally,
+  one must specify an additional library to link against,
+  `libds_search.a' in this case though invocation drops the `lib' and
+  `.a' parts. Run the following command:
+  ,----
+  | > gcc do_search.c  -I ds_search_static  -L ds_search_static  -lds_search
+  | #                  ^^ includes dir ^^^  ^^ libray dir ^^^^^  ^^lib name^
+  `----
+  and then run the resulting executable to show its output.
+
+
+(D)
+~~~
+
+  Run the `nm' command to show the symbol names present in the resulting
+  executable.  Verify that the text definitions for library functions
+  required by `do_search.c' are present and well-defined.  Show your
+  output for `nm'
+
+  Identify some library functions that are present in the executable
+  that are not explicitly mentioned but are required for some library
+  functions that are needed (thing random number generation).
+
+  Are ALL functions from libds_search.a copied in or only those that are
+  needed?
+
+
+OPTIONAL: Creating Dynamically Linked Shared Libraries
+======================================================
+
+(A)
+~~~
+
+  Dynamically Linked Shared Libraries differ from static counterparts in
+  that no definitions are copied into an executable.  Instead, when
+  programs linked to these are created, the definitions for some
+  functions are left undefined but marked as "link at runtime."  On
+  loading the program, the location of library code is mapped into the
+  virtual address space of the program. Since multiple programs can map
+  different addresses to the same location, only one copy of functions
+  such as `printf()' need to be in memory.
+
+  The provided code directory `ds_search_dynamic/' contains a `Makefile'
+  which will build a shared object (.so) version of a data structure
+  search library as follows.
+  ,----
+  | > cd ds_search_dynamic/
+  |
+  | > make
+  | gcc -g -Wall -fpic -c tree.c
+  | gcc -g -Wall -fpic -c array.c
+  | gcc -g -Wall -fpic -c list.c
+  | gcc -g -Wall -fpic -c util.c
+  | gcc -shared -o libds_search.so tree.o array.o list.o util.o
+  |
+  | > file libds_search.so
+  | libds_search.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked
+  |
+  | > cd ..
+  `----
+
+  Compile and link the provided `do_search.c' program against this
+  library as follows.
+
+  ,----
+  | > gcc do_search.c -lds_search -I ds_search_dynamic -L ds_search_dynamic
+  `----
+
+  Run the `ldd' utility to see what dynamic library dependencies the
+  resulting `a.out' program has and attempt to run it as shown.
+  ,----
+  | > ldd a.out
+  | ...
+  |
+  | > ./a.out
+  | ...
+  `----
+
+  Show the output for these commands.
+
+
+(B)
+~~~
+
+  Describe any problems that you encounter with running the program and
+  how to resolve them using environment variables that control where the
+  dynamic linker searches for library dependencies.

@@ -1,0 +1,193 @@
+                           __________________
+
+                            LAB 06 QUESTIONS
+                           __________________
+
+
+- Name: (FILL THIS in)
+- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: Coins Assembly code
+==============================
+
+  The code pack contains the following files.
+
+  ------------------------------------------------------------------------
+   FILE               Descriptions
+  ------------------------------------------------------------------------
+   coins_main.c       main function to call the above
+   coins_funcs.c      two functions manipulating the `coins_t' structure
+   coins_funcs_asm.s  incomplete assembly versions of the above functions
+  ------------------------------------------------------------------------
+
+  The purpose of this problem is to complete the assembly code in
+  `coins_funcs_asm.s' so that the functions there act identically to the
+  C versions.
+
+  Compile and the C version using the below:
+  ,----
+  | > gcc coins_main.c coins_funcs.c
+  | > ./a.out 24
+  | 24 cents is...
+  | 0 quarters
+  | 2 dimes
+  | 0 nickels
+  | 4 pennies
+  | which is 24 cents
+  |
+  | > ./a.out 63
+  | 63 cents is...
+  | 2 quarters
+  | 1 dimes
+  | 0 nickels
+  | 3 pennies
+  | which is 63 cents
+  `----
+
+  After completing the problems the following should compile and produce
+  the same results.
+
+  Compile and the C version using the below:
+  ,----
+  | > gcc coins_main.c coins_funcs_asm.s
+  | > ./a.out 24
+  | 24 cents is...
+  | 0 quarters
+  | 2 dimes
+  | 0 nickels
+  | 4 pennies
+  | which is 24 cents
+  `----
+
+  Edit coins_funcs_asm.s to complete it and answer the questions below.
+
+
+A
+~
+
+  Consider the first block of the assembly function marked BLOCK A.
+  Describe what it is doing and how it relates to the C code in
+  `coins_funcs.c'. Mention the purpose of the code around the label
+  .OOB.
+
+  Block a checks the inputs and jumps to the return block .00b if it is outside 99 cents (jg) or below 0 cents (jl)
+
+
+B
+~
+
+  BLOCK B performs a division operation. Based on the comments and
+  assembly operations, describe what is going on, why the %eax register
+  is used, and why the movb instruction is employed.
+
+eax is typically used as storage for operations.
+eax is set to integer cents value
+cqto extends sign of eax to edx (combined 64 bit register %edx:%eax)
+set %r8d to 25 and divide the combined register by %r8d
+%eax is equal to the quotient
+%edx is equal to the remainder
+%al is the value of the lower 8 bits of eax, its value is moved to the 0th bit of rsi
+the same is repeated for dimes
+
+
+C
+~
+
+  Complete BLOCK C by following the pattern laid out in the preceding
+  blocks to calculate the number of nickels and pennies required and set
+  the fields of the struct pointer to appropriate values. Consider
+  carefully whether two additional divisions are required or if a single
+  divide will suffice.
+
+
+D
+~
+
+  In the total_coins function, study the pattern laid out the first few
+  blocks which extract the 8-bit fields from the packed coins_t struct
+  in register rdi. Note the use of shifts with AND operations to mask
+  the low order bits to get a single field "alone" in a register before
+  doing further operations. Copy this patter to complete BLOCK D which
+  adds on nickels and pennies to the total.
+
+
+PROBLEM 2: Quote Binary Debugging
+=================================
+
+  The two files `quote_main.c' and `quote_data.o' can be compiled
+  together to form an executable as in the following.
+  ,----
+  | > gcc quote_main.c quote_data.o
+  |
+  | > a.out
+  | Complete this sentence by C++ creator Bjarne Stroustrup:
+  | C makes it easy to shoot yourself in the foot; ...
+  |
+  | enter a number from 0 to 15: 2
+  |
+  | 2: Java prevents you from shooting yourself in the foot by cutting off all your fingers.
+  |
+  | Have a nice tall glass of ... NOPE.
+  `----
+  As in a previous exercise, the intention is to use the debugger to
+  detect the correct response. In this case however, the correct
+  completion is present in `quote_main.c'. However, one must enter a
+  number which selects from several responses in an attempt to match the
+  correct completion. It is possible to "brute force" the solution by
+  trying all solutions. However, the intent of the activity is to
+  explore the running code with the debugger to answer the questions
+  below. This will give insight into some stages of the binary bomb
+  assignment.
+
+
+A
+~
+
+  Use some binary utility programs to print out the symbols that are
+  present in `quote_data.o'.  Review the previous lab if you have
+  forgotten which programs can print symbols in a binary object file.
+  Speculate as to which data might pertain to where potential options
+  are stored.
+
+  choices_actual
+
+
+B
+~
+
+  The entry point into the assembly code in `quote_data.o' is the
+  function `get_it'.  Use either the debugger or a disassembly of the
+  object to trace whether this functions performs the entire computation
+  or if other functions are also used. Use this along with other
+  observations of the content of the `quote_data.o' file to infer what
+  kind of structure the choices are stored in.
+get it calls a function list_get so I can infer that the choices are stored in a list
+~
+
+  Use the debugger to step through the functions in `quote_data.o'.
+  Keep in mind that the parameters to the function follow the standard
+  convention: 1st param in register `%rdi', second in `%rsi', and so
+  forth.  You should be able to identify a loop in a critical function
+  in which the choices are present.  Use `print' and `x' commands in gdb
+  to examine data pointed to be registers to help identify where the
+  correct response is located.
+
+  Recall that you can examine memory addresses pointed to registers with
+  gdb commands like the following.
+  ,----
+  | (gdb) x/d $rax   # print memory pointed to by rax as a decimal integer
+  | (gdb) x/x $rax   # print memory pointed to by rax as a hex number
+  | (gdb) x/s $rax   # print memory pointed to by rax as a string
+  `----
+
+  Include what debugger techniques you used in your answer along with
+  the index of the correct completion.
+
+I set a breakpoint at get_it and used stepi in gdb to go through the function until I came to a loop
+the loop allowed me to count the number of iterations before it returned a value back to main. This number was 4 and the
+correct value according to the function. after the loop $rax is equivalent to the fourth statement

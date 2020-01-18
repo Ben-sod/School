@@ -1,0 +1,1 @@
+./test_el_malloc.sh: line 78: test-data/el_malloc_test_10: No such file or directory

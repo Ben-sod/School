@@ -1,0 +1,312 @@
+                           __________________
+
+                            LAB 05 QUESTIONS
+                           __________________
+
+
+- Name: (FILL THIS in)
+- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+PROBLEM 1: ipow Assembly
+========================
+
+  The code pack contains the following files.
+  - ipow_for.c : ipow function using a for loop
+  - ipow_while.c : ipow function using a while loop
+  - ipow_main.c : main function to call the above
+  Both the for and while versions define the same function which has a
+  meaning which should be obvious.
+
+  Compile and run these as programs using either of the below:
+  ,----
+  | > gcc ipow_main.c ipow_for.c
+  | > ./a.out 3 5
+  | 3^5 = 243
+  | OR
+  | > gcc ipow_main.c ipow_while.c
+  | > ./a.out 3 5
+  | 3^5 = 243
+  `----
+
+
+A
+~
+
+  Compile ipow_for.c to assembly code. Look up how to do this with gcc
+  if you did not take notes on how to do so from lecture. Make sure to
+  disable optimizations by gcc when compiling.
+
+  Paste the command you used and the generated assembly for the
+  resulting ipow_for.s as you answer below.
+
+  gcc -S ipow_for.c -Og
+
+  .file	"ipow_for.c"
+  .text
+  .globl	ipow
+  .type	ipow, @function
+ipow:
+.LFB0:
+  .cfi_startproc
+  movl	$0, %edx
+  movl	$1, %eax
+  jmp	.L2
+.L3:
+  imull	%edi, %eax
+  addl	$1, %edx
+.L2:
+  cmpl	%esi, %edx
+  jl	.L3
+  rep ret
+  .cfi_endproc
+.LFE0:
+  .size	ipow, .-ipow
+  .ident	"GCC: (Ubuntu 7.3.0-27ubuntu1~18.04) 7.3.0"
+  .section	.note.GNU-stack,"",@progbits
+
+
+B
+~
+
+  Similarly, compile the file ipow_while.c to assembly and compare the
+  resulting ipow_while.s to ipow_for.s.
+  - If you see differences, describe what these differences are and why
+    the generated code varies between the two.
+  - If you see similar code, describe why this might be.
+
+  The code is very similar. THis is because a for loop and while loop operate nearly the same
+
+  .file	"ipow_while.c"
+	.text
+	.globl	ipow
+	.type	ipow, @function
+ipow:
+.LFB0:
+	.cfi_startproc
+	movl	$0, %edx
+	movl	$1, %eax
+	jmp	.L2
+.L3:
+	imull	%edi, %eax
+	addl	$1, %edx
+.L2:
+	cmpl	%esi, %edx
+	jl	.L3
+	rep ret
+	.cfi_endproc
+.LFE0:
+	.size	ipow, .-ipow
+	.ident	"GCC: (Ubuntu 7.3.0-27ubuntu1~18.04) 7.3.0"
+	.section	.note.GNU-stack,"",@progbits
+
+
+C
+~
+
+  Examine the generated assembly code in ipow_for.s carefully. Based on
+  the "assignments" of initial values to registers and the use of
+  registers in operations like multiplication, addition, and comparison,
+  attempt to draw a correspondence between the assembly registers and C
+  variables. Ensure you identify the C variables
+  - argument base: which register contains the 1st function argument?
+  - argument exp: which register contains the 2nd function argument?
+  - local pow which is also the return value
+  - local i
+
+  For your answer, paste in an annotated copy of the ipow_for.s which
+  shows labels the correspondence of registers to C variables and
+  describes how most of the assembly lines correspond to lines in the C
+  code. You may skip lines like
+
+  .file	"ipow_for.c"
+  .text
+  .globl	ipow
+  .type	ipow, @function
+ipow:
+.LFB0:
+  .cfi_startproc
+  movl	$0, %edx // i index
+  movl	$1, %eax //pow
+  jmp	.L2
+.L3:
+  imull	%edi, %eax //edi is base
+  addl	$1, %edx
+.L2:
+  cmpl	%esi, %edx //esi is exp
+  jl	.L3
+  rep ret
+
+  ,----
+  | .cfi_startproc
+  | .type	ipow, @function
+  | .size	ipow, .-ipow
+  | .ident	"GCC: (GNU) 7.3.0"
+  | .section	.note.GNU-stack,"",@progbits
+  `----
+  which are assembler directives beyond the scope of our current
+  interest.
+
+
+D
+~
+
+  One oddity that is likely to appear in the generated assembly code is
+  the instruction
+  ,----
+  | rep ret
+  `----
+  The `ret' instruction is a function return but `rep' is supposed to
+  have a different purpose and the combination is strange.  Investigate
+  this by
+  - Reading page 208 of Bryant/O'Hallaron which describes this in an
+    "aside" , OR
+  - Doing a little internet search which should yield similar
+    information.
+  Describe roughly why `rep ret' shows up here.
+
+  rep ret is added by gcc when optimizations are enable, which in this case they are
+
+PROBLEM 2: Binary Analysis
+==========================
+
+  The two files verify_main.c and verify.o can be compiled together to
+  form an executable as in the following.
+  ,----
+  | > gcc verify.o verify_main.c
+  | > ./a.out
+  | Complete this sentence by C creator Dennis Ritchie:
+  | C has the power of assembly language and the convenience of ...
+  | pizza?
+  | Have a nice tall glass of ... NOPE.
+  | >
+  `----
+
+  The intent of the executable is to enter the correct string to
+  complete a sentence.  Unfortunately the source code for the verify()
+  function in verify.o has been lost.  This problem analyzes how one
+  might dett answer without source code.
+
+
+A: strings utility for binaries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Make use of the `strings' program which is available on most Unix
+  platforms. This program shows the ASCII strings present in a binary
+  object such as verify.o. Run it by typing:
+  ,----
+  | > strings verify.o
+  `----
+  Show the results you of the run for you answer and speculate about
+  what strings seem probable as completions to the sentence in
+  verify_main.
+
+  a set of dental instruments
+C++ without the ++ part
+assembly language
+Dvorak keyboards
+trick question: it isn't convenient
+a gun that shoots forwards and backwards
+OCaml without type inference, garbage collection, or first-class functions
+GCC: (GNU) 7.2.1 20171128
+verify.c
+verify
+answers
+_GLOBAL_OFFSET_TABLE_
+strcmp
+.symtab
+.strtab
+.shstrtab
+.rela.text
+.data
+.bss
+.rodata.str1.1
+.rodata.str1.8
+.rela.data.rel.local
+.comment
+.note.GNU-stack
+.rela.eh_frame
+
+  trick question
+
+B: nm utility to show symbol names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Run the `nm' utility which is short for "names". It produces the set
+  of symbols present in a binary file.
+  ,----
+  | > nm verify.o
+  `----
+  Such symbols are identified by 1-letter codes such as
+  - T/t : program instructions (text) in the object
+  - D/d : data defined in the objects
+  - U : undefined symbols in the object which must come from other
+    objects
+
+  Show the output of you run of `nm' and speculate on what variable
+  might contain the completion to the sentences.
+
+
+  0000000000000000 D answers
+                   U _GLOBAL_OFFSET_TABLE_
+                   U strcmp
+  0000000000000000 T verify
+
+  answers
+
+C: GDB with Assembly
+~~~~~~~~~~~~~~~~~~~~
+
+  The binary utilities mentioned can give some insight and perhaps
+  enable problems like this to be "brute forced": once all possible
+  answers are known, try all of them until something works.
+
+  However, `gdb' can provide a faster route as it handles assembly code
+  as easily as C code.  Take the following approach.
+
+  1. Run gdb on the executable resulting from compiling verify_main.c
+     and verify.o
+  2. In TUI mode, use the command
+     ,----
+     | (gdb) layout asm
+     `----
+     to show assembly code for the program being debugged. This is
+     necessary when dealing with binary files like verify.o.  If you
+     neglected to run `gdb' in TUI mode, you can enable it with
+     ,----
+     | (gdb) tui enable
+     `----
+  3. Set a breakpoint on the function that verifies the input.
+  4. Run the program to the breakpoint. You will need to enter a guess
+     for the sentence completion but anything will work to move the
+     program forward.
+  5. Once the verifying function is entered, look for a string
+     comparison to be done, likely using the `strcmp()' function.  Step
+     forwards to just before this function. Use the `stepi' instruction
+     to step forward by single assembly instructions.
+  6. Immediately preceding this call will be some movement of pointers
+     into registers which are the arguments to the function. You should
+     inspect the strings pointed to by these registers.
+  7. You can print the values of registers as various things in `gdb'
+     using the `print' command and C-style casting. Examples are below.
+     Note register names are preceded with a dollar sign ($).
+     ,----
+     |    (gdb) print (int) $rax
+     |    $1 = -8448
+     |    (gdb) print (char *) $rax
+     |    $2 = 0x7fffffffdf00 "cruft\n"
+     |    (gdb) print (double) $rax
+     |    $3 = 140737488346880
+     |    (gdb) print (int *) $rax
+     |    $4 = (int *) 0x7fffffffdf00
+     `----
+  8. Look particularly at "argument" registers which are used to pass
+     information to functions like `strcmp()'.  Some of these should
+     contain pointers to the string entered and the correct string.
+
+  Give the correct string to enter to complete the sentence.
+ assembly language

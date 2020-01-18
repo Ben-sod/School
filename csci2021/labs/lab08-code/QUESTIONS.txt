@@ -1,0 +1,219 @@
+                           __________________
+
+                            LAB 08 QUESTIONS
+                           __________________
+
+
+- Name: (Ben Soderholm)
+- NetID: (soder344)
+
+Answer the questions below according to the lab specification. Write
+your answers directly in this text file and submit it to complete the
+lab.
+
+
+Important: Don't Run on Vole
+============================
+
+  Vole is a virtualized environment which means measuring the runtime of
+  codes will be very unpredictable on it.
+
+  Favor a "real" machine like a physical lab machine, laptop, or a
+  remote login to apollo.cselabs.umn.edu.  To run the codes remotely,
+  log in via the ssh tool as in
+
+  ,----
+  | > ssh kauf0095@apollo.cselabs.umn.edu
+  `----
+
+  Use your X.500 username/password to get access. All CSE labs machines
+  share the same home directory so you any code you download to Vole or
+  a physical lab machine.
+
+
+Compiling and Timing
+====================
+
+  IMPORTANT: Use the provided Makefile to compile as in
+  ,----
+  | > make
+  | gcc -Wall -g -Og -c superscalar_main.c
+  | gcc -Wall -g -Og -c superscalar_funcs.c
+  | gcc -Wall -g -Og -o superscalar_main superscalar_main.o superscalar_funcs.o
+  `----
+  The compilation uses `-Og' (debug level optimization) which is
+  necessary to stop the compiler from modifying some loops.
+
+  This will produce the `superscalar_main' program which has the
+  following usage:
+  ,----
+  | > ./superscalar_main
+  | usage: ./superscalar_main <ALG> <MULT> <EXP>
+  |   <MULT> and <ALG> are integers, iterates for MULT * 2^{EXP} iterations
+  |   <ALG> is one of
+  |           add1_sep : add 1 times in loop
+  |           add2_sep : add 2 times in same loop; separate destinations
+  |           add3_sep : add 3 times in same loop; separate destinations
+  |          add2_same : add 2 times in same loop; same destinations
+  |           mul1_sep : multiply 1 times in loop
+  |           mul2_sep : multiply 2 times in same loop; separate destinations
+  |           mul3_sep : multiply 3 times in same loop; separate destinations
+  |          mul2_same : multiply 2 times in same loop; same destinations
+  |    add_and_mul_sep : add and multiply in the same loop; separate destinations
+  |   add_and_mul_same : add and multiply in the same loop; same destination
+  |   add_then_mul_sep : add and multiply in different loops; separate destinations
+  |  add_then_mul_same : add and multiply in different loops; same destinations
+  `----
+
+  Experiment with algorithm `add1_sep' and parameters `MULT' and `EXP'
+  which control the number of iterations run. Experiment until you get a
+  run time of about 1 second such as MULT=1 and EXP=30 on apollo.
+  ,----
+  | apollo> time ./superscalar_main add1_sep 1 30
+  | add1_sep for 18 * 2^{27} = 2415919104 iterations... complete
+  |
+  | real	0m1.071s
+  | user	0m1.040s
+  | sys	0m0.008s
+  `----
+
+
+PROBLEM 1: Addition
+===================
+
+(A) add1_sep / add2_sep / add3_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Examine the source code in `superscalar_funcs.c' for the following
+  algorithms.
+  - add1_sep : add 1 times in loop
+  - add2_sep : add 2 times in same loop; separate destinations
+  - add3_sep : add 3 times in same loop; separate destinations
+  Note that each does some additions in a loop. Time each of these WITH
+  THE SAME MULT/EXP parameters and show your timings. Describe how the
+  timings compare and speculate on why.
+
+ 2<1<3 more operations
+
+  Note that all of these involve incrementing a counter (`i++') so the
+  number of additions is one greater than the algorithm name suggests.
+
+
+(B) add2_sep / add2_same
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the source code of the two algorithms below.
+  - add1_sep : add 1 times in loop
+  - add2_sep : add 2 times in same loop; separate destinations
+  - add2_same : add 2 times in same loop; same destinations
+  Note that the only difference between the add2_X algorithms is that
+  the destination for the results.
+
+
+  Compare timings for these and speculate on the reasons for any
+  unexpected results.
+  add2_sep<add1_sep<add2_same
+  Accessing memory location order?
+
+PROBLEM 2: Multiplication
+=========================
+
+(A) add1_sep / mul1_sep
+~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add1_sep : add 1 times in loop
+  - mul1_sep : multiply 1 times in loop
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+  add took about 1.5x less time
+  multiplication is a longer operation than addition
+
+
+(B) mul1_sep / mul2_sep / mul3_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - mul1_sep : multiply 1 times in loop
+  - mul2_sep : multiply 2 times in same loop; separate destinations
+  - mul3_sep : multiply 3 times in same loop; separate destinations
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+They are all about the same
+Not sure
+
+(C) mul1_sep / mul2_sep / mul2_same
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - mul1_sep : multiply 1 times in loop
+  - mul2_sep : multiply 2 times in same loop; separate destinations
+  - mul2_same : multiply 2 times in same loop; same destinations
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+  took twice as long
+  Operating in the same memory location so takes twice as long
+
+
+PROBLEM 3: Combined Addition/Multiplication
+===========================================
+
+(A) add1_then_mul_sep / add2_and_mul_sep
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add1_then_mul_sep : add and multiply in different loops; separate
+    destinations
+  - add2_and_mul_sep : add twice and multiply in the same loop; separate
+    destinations
+  Note that each loop involves incrementing a counter so both of the
+  above algorithms should do the same number of operations for N
+  iterations:
+  ---------------------------------------------
+                      loop        total  total
+   Algorithm          incr  adds  adds   mults
+  ---------------------------------------------
+   add1_then_mul_sep  2*N   1*N   3*N    N
+   add2_and_mul_sep_  1*N   2*N   3*N    N
+  ---------------------------------------------
+
+  Time these algorithms on the same parameters and speculate on the
+  timing differences.
+
+  and took about 1s less time
+
+  Compare the timings to your earlier results for add1_sep and mul1_sep.
+  and was the same timing as mul1_sep
+
+(B) add2_then_mul_sep / add2_and_mul_same
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Compare the following two algorithms.
+  - add_and_mul_sep : add and multiply in the same loop; separate
+    destinations
+  - add_and_mul_same : add and multiply in the same loop; same
+    destination
+  Time them on the same parameters and speculate on the timing
+  differences.
+
+  add_and_mul_sep took 1.5s less than same
+
+  Compare the timings to your earlier results for add1_sep and mul1_sep.
+
+  Compare the following two algorithms.
+  - add1_then_mul_same : add and multiply in different loops; same
+    destinations
+  - add2_and_mul_same : add twice and multiply in the same loop; same
+    destination
+  As before the operation count is the same but in this case the
+  destination for adds/multiplies is the same.
+
+  Time these algorithms on the same parameters and speculate on the
+  timing differences. Compare to the results from part A where the
+  destinations are distinct memory/register locations.
+
+1. 3.258s
+2. 4.116s

@@ -1,0 +1,142 @@
+                              ____________
+
+                               A4 WRITEUP
+                              ____________
+
+
+- Name: (FILL THIS in)
+- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+
+Answer the questions below according to the assignment
+specification. Write your answers directly in this text file and submit
+it along with your code.
+
+
+PROBLEM 1: optimized_matrix_trans_mult_vec()
+============================================
+
+  Do your timing study on apollo.cselabs.umn.edu
+
+
+(A) Paste Source Code
+~~~~~~~~~~~~~~~~~~~~~
+
+  Paste a copy of your source code for the function
+  optimized_matrix_trans_mult_vec() below.
+
+  int optimized_matrix_trans_mult_vec(matrix_t mat, vector_t vec, vector_t res){
+    if(mat.rows != vec.len){
+      printf("mat.rows (%ld) != vec.len (%ld)\n",mat.rows,vec.len);
+      return 1;
+    }
+    if(mat.cols != res.len){
+      printf("mat.cols (%ld) != res.len (%ld)\n",mat.cols,res.len);
+      return 2;
+    }
+    for(int i=0; i<mat.cols;i++){
+      VSET(res,i,0);
+    }
+    for(int i=0; i<mat.rows; i++){
+      for(int j=0; j<mat.cols; j+=2){ //loop iterates by 2 so that 2 iterations can be done in one iteration
+        int elij = MGET(mat,i,j);
+        int veci= VGET(vec,i);
+        int curr = VGET(res,j);
+        //adding 1 to my j values so that they can be piplined, allowing 2 iterations to process at one time
+        int elij2 = MGET(mat,i,j+1);
+        int veci2= VGET(vec,i);
+        int curr2 = VGET(res,j+1);
+        //next group of instructions work concurrently as soon as previous code executes
+        int prod = elij * veci;
+        int next = curr + prod;
+        int prod2 = elij2 * veci2;
+        int next2 = curr2 + prod2;
+        //2 locations are set at the same time
+        VSET(res,j, next);
+        VSET(res,j+1, next2);
+
+      }
+    }
+    return 0;
+  }
+
+
+(B) Timing on Apollo
+~~~~~~~~~~~~~~~~~~~~
+
+  Paste a copy of the results of running `mult_bench' on
+  apollo.cselabs.umn.edu in the space below which shows how your
+  performance optimizations improved on the baseline codes.
+
+  soder344@csel-apollo:/home/soder344/Desktop/a4-code $ ./mult_benchmark
+    SIZE       BASE       NORM        OPT BSPDUP NSPDUP POINTS 
+     512 2.0530e-03 1.1620e-03 7.5200e-04   2.73   1.55      1
+    1024 3.3815e-02 4.7150e-03 3.1550e-03  10.72   1.49      5
+    2048 2.8545e-01 1.8467e-02 1.3466e-02  21.20   1.37     10
+    4096 1.2924e+00 7.3490e-02 5.3583e-02  24.12   1.37     11
+    8192 5.3654e+00 2.8680e-01 2.4880e-01  21.57   1.15     10
+  RAW POINTS: 37
+  TOTAL POINTS: 35 / 35
+
+(C) Optimizations
+~~~~~~~~~~~~~~~~~
+
+  Describe in some detail the optimizations you used to speed the code
+  up.  THE CODE SHOULD CONTAIN SOME COMMENTS already to describe these
+  but in the section below, describe in English the techniques you used
+  to make the code run faster.  Format your descriptions into discrete
+  chunks such as.
+        Optimization 1: I changed the order of the loops so that the rows are iterated through at one time instead
+        of the columns being iterated through for each row. This allows for faster operation because the data that
+        im looking for is in a 1 dimensional array for the C language, with the rows in order.
+
+        Optimization 2: I also changed the inside for loop that iterates through the rows to iterate 2 at a time. I
+        then copy and pasted the operations and changed the variable names to add the suffix '2' (ie: prod -> prod2)
+        To the second group of variables and operations, I incremented the 'j' index by 1 so that it would cover the odd
+        indexes for each iteration. Doing this allowed me to pair like operations in the code in order to pipeline the operations/
+        This allowed the chunks code to operate concurrently and not have to wait for previous code to execute.
+
+
+
+PROBLEM 2: Timing Search Algorithms
+===================================
+
+  Do your timing study on apollo.cselabs.umn.edu
+
+
+(A) Min Size for Algorithmic Differences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Determine size of input array does one start to see a measurable
+  difference in the performance of the linear and logarithmic
+  algorithms.  Produce a timing table which includes all algorithms
+  which clearly demonstrates an uptick in the times associated with some
+  while others remain much lower.  Identify what size this appears to be
+  a occur.
+
+
+(B) List vs Array
+~~~~~~~~~~~~~~~~~
+
+  Determine whether the linear array and linked list search remain
+  approximately at the same performance level as size increases to large
+  data or whether one begins to become favorable over other. Determine
+  the approximate size at which this divergence becomes obvious. Discuss
+  reasons WHY this difference arises.
+
+
+(C) Tree vs Array
+~~~~~~~~~~~~~~~~~
+
+  Compare the binary array search and binary tree search on small to
+  very large arrays. Determine if there is a size at which the
+  performance of these two begins to diverge. If so, describe why this
+  might be happening based on your understanding of the data structures
+  and the memory system.
+
+
+(D) OPTIONAL MAKEUP CREDIT
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  If you decided to make use of a table of function pointers/structs
+  which is worth makeup credit, describe your basic design for this
+  below.

@@ -1,0 +1,1 @@
+./test_el_malloc.sh: line 126: valgrind: command not found
